@@ -126,8 +126,9 @@ HTML_start_more_d_2 = """
                 select_element.name = unused[i]
 
                 //change its options
-                for (j = 0; j < select_element.options.length; j++){
-                    select_element.options[j].innerHTML = eval(unused[i])[j]
+                select_element.options.length = 0;
+                for (j = 0; j < eval(unused[i]).length; j++){
+                    select_element.options[j] = new Option(eval(unused[i])[j], j, false, false)
                 }
             }
         }
