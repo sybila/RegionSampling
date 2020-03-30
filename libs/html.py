@@ -189,14 +189,6 @@ HTML_mid = """
 </head>
 <body onload="loadImage()">
 
-    <svg style="width:0;height:0;position:absolute;" aria-hidden="true" focusable="false">
-        <linearGradient id='gradient'>
-            <stop offset='0%'  stop-color='rgb(255, 0, 0)' />
-            <stop offset='50%'  stop-color='rgb(255,255,0)' />
-            <stop offset='100%' stop-color='rgb(0, 128, 0)' />
-        </linearGradient>
-    </svg>
-
     <div id="combos">"""
 
 HTML_x_axis = """

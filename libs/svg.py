@@ -29,7 +29,7 @@ class Picture():
 
     def __str__(self):
         output = self.header
-        # output += GRADIENT
+        output += GRADIENT
         for point in self.points:
             output += point + ' '
         for region in self.regions:
@@ -79,7 +79,7 @@ class Picture():
     def add_legend_points(self, min_v, max_v):
         x = self.width_bounds['min'] + 100
         y = self.height_bounds['max'] + 100
-        self.add_rectangle(x, self.height_bounds['max'] + 30, 250, 25, 'url(#gradient)')
+        self.add_rectangle(x, self.height_bounds['max'] + 30, 250, 25, 'url(%23gradient)')
         self.add_line(x, self.height_bounds['max'] + 55, x + 250, self.height_bounds['max'] + 55, 'black', 3)
 
         values = [min_v, (min_v + max_v) / 2, max_v]

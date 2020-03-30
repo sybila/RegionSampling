@@ -23,6 +23,4 @@ def samplePoints(function, sample_space, ordered_params):
         if not result == zoo:
             results.append(Point(values, result))
 
-    print(ordered_params)
-
     return results
