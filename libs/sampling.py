@@ -1,4 +1,4 @@
-from sympy import Symbol, zoo
+from sympy import Symbol, oo, zoo, nan
 from sympy.parsing.sympy_parser import parse_expr
 import itertools
 
@@ -20,7 +20,7 @@ def samplePoints(function, sample_space, ordered_params):
 
     for values in combinations:
         result = function.subs(dict(zip(symbols, values)))
-        if not result == zoo:
-            results.append(Point(values, result))
+        if not result.has(oo, -oo, zoo, nan):
+            results.append(Point(values, float(result)))
 
     return results
