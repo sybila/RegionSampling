@@ -11,7 +11,7 @@ GRADIENT = \
 
 
 class Picture():
-    def __init__(self, bounds):
+    def __init__(self, bounds, normalisation=True):
         self.regions = []
         self.width_bounds = {'min': 100, 'max': 600}
         self.width_bounds['len'] = self.width_bounds['max'] - self.width_bounds['min']
@@ -25,6 +25,7 @@ class Picture():
         self.points = []
         self.regions = []
         self.bounds = bounds
+        self.normalisation = normalisation
         self.axis_description()
 
     def __str__(self):
@@ -82,7 +83,10 @@ class Picture():
         self.add_rectangle(x, self.height_bounds['max'] + 30, 250, 25, 'url(%23gradient)')
         self.add_line(x, self.height_bounds['max'] + 55, x + 250, self.height_bounds['max'] + 55, 'black', 3)
 
-        values = [min_v, (min_v + max_v) / 2, max_v]
+        if not self.normalisation:
+            values = [min_v, (min_v + max_v) / 2, max_v]
+        else:
+            values = [0, 0.5, 1]
 
         for i in range(len(values)):
             self.add_line(x + i * 125, self.height_bounds['max'] + 55, x + i * 125, self.height_bounds['max'] + 65,
@@ -90,7 +94,7 @@ class Picture():
             self.add_text(x - 30 + i * 125, y - 10, 0, '%.2f' % values[i])
 
 
-    def load_points(self, points, x, y, min_val, max_val, normalisation=True):
+    def load_points(self, points, x, y, min_val, max_val):
         self.add_legend_points(min_val, max_val)
         for point in points:
             p = point.value
@@ -98,7 +102,7 @@ class Picture():
                                    self.width_bounds['len'], self.width_bounds['min'])
             y_cor = fit_to_picture(normalise(point.projection(y), self.bounds['y_max'], self.bounds['y_min']),
                                    self.height_bounds['len'], self.height_bounds['min'])
-            if normalisation:
+            if self.normalisation:
                 p = normalise(p, min_val, max_val)
             self.add_point(x_cor, y_cor, colorify(p))
 
