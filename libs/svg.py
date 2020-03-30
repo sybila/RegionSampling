@@ -2,14 +2,11 @@ import numpy as np
 
 
 GRADIENT = \
-'''
-<defs>
-    <linearGradient id='gradient'>
-        <stop offset='0%'  stop-color='rgb(255, 0, 0)' />
-        <stop offset='50%'  stop-color='rgb(255,255,0)' />
-        <stop offset='100%' stop-color='rgb(0, 128, 0)' />
-    </linearGradient>
-</defs>
+''' <linearGradient id='gradient'>\
+ <stop offset='0%'  stop-color='rgb(255, 0, 0)' />\
+ <stop offset='50%'  stop-color='rgb(255,255,0)' />\
+ <stop offset='100%' stop-color='rgb(0, 128, 0)' />\
+ </linearGradient> \
 '''
 
 
@@ -32,7 +29,7 @@ class Picture():
 
     def __str__(self):
         output = self.header
-        output += GRADIENT
+        # output += GRADIENT
         for point in self.points:
             output += point + ' '
         for region in self.regions:
@@ -93,13 +90,13 @@ class Picture():
             self.add_text(x - 30 + i * 125, y - 10, 0, '%.2f' % values[i])
 
 
-    def load_points(self, points, x, y, min_val, max_val, bounds, normalisation=True):
+    def load_points(self, points, x, y, min_val, max_val, normalisation=True):
         self.add_legend_points(min_val, max_val)
         for point in points:
             p = point.value
-            x_cor = fit_to_picture(normalise(point.projection(x), bounds['x_max'], bounds['x_min']),
+            x_cor = fit_to_picture(normalise(point.projection(x), self.bounds['x_max'], self.bounds['x_min']),
                                    self.width_bounds['len'], self.width_bounds['min'])
-            y_cor = fit_to_picture(normalise(point.projection(y), bounds['y_max'], bounds['y_min']),
+            y_cor = fit_to_picture(normalise(point.projection(y), self.bounds['y_max'], self.bounds['y_min']),
                                    self.height_bounds['len'], self.height_bounds['min'])
             if normalisation:
                 p = normalise(p, min_val, max_val)
