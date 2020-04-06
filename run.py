@@ -9,7 +9,7 @@ from libs.sampling import samplePoints
 from libs.svg import Picture
 
 '''
-python3 sample.py <storm_output_file> <parameter_intervals> <output_html_file>
+python3 run.py <storm_output_file> <parameter_intervals> <output_html_file>
 
 where <parameters> is a dictionary of type:
     "param-name" : [from, to, number]
@@ -17,15 +17,11 @@ where <parameters> is a dictionary of type:
     with interval (<from>, <to>) and <number> samples.
 
 Example:
-    python3 sample.py storm_output.txt '{"q" : [5, 10, 10], "p" : [0, 2, 10]}' output.html
+    python3 run.py storm_output.txt '{"q" : [5, 10, 10], "p" : [0, 2, 10]}' output.html
 '''
-if __name__ == '__main__':
-    output_file = sys.argv[-1]
-    params = eval(sys.argv[-2])
-    storm_file = sys.argv[-3]
 
-    f = open(output_file, "w")
-
+def sample(storm_file, params):
+    output = ""
     function = parse_storm_file(storm_file)
 
     sample_space = {key: np.linspace(params[key][0], params[key][1], params[key][2])
@@ -38,16 +34,16 @@ if __name__ == '__main__':
     indices = set(range(len(ordered_params)))
 
     if len(ordered_params) <= 2:
-        f.write(libs.html.HTML_start_2d)
+        output += (libs.html.HTML_start_2d)
     else:
-        f.write(libs.html.HTML_start_more_d_1)
-        f.write("\t\t\tvar dims = {}\n".format(["dim_{}".format(i) for i in range(len(ordered_params) - 2)]))
-        f.write("\t\t\tvar params = {}\n".format(ordered_params))
+        output += (libs.html.HTML_start_more_d_1)
+        output += ("\t\t\tvar dims = {}\n".format(["dim_{}".format(i) for i in range(len(ordered_params) - 2)]))
+        output += ("\t\t\tvar params = {}\n".format(ordered_params))
         for param in sample_space:
-            f.write("\t\t\tvar {} = {}\n".format(param, list(sample_space[param])))
-        f.write(libs.html.HTML_start_more_d_2)
-        f.write("\t\t\tvar dims = {}".format(["dim_{}".format(i) for i in range(len(ordered_params) - 2)]))
-        f.write(libs.html.HTML_start_more_d_3)
+            output += ("\t\t\tvar {} = {}\n".format(param, list(sample_space[param])))
+        output += (libs.html.HTML_start_more_d_2)
+        output += ("\t\t\tvar dims = {}".format(["dim_{}".format(i) for i in range(len(ordered_params) - 2)]))
+        output += (libs.html.HTML_start_more_d_3)
 
     for (x, y) in itertools.permutations(indices, 2):
         bounds_pos = get_bounds_positions(ordered_params, sample_space, x, y)
@@ -74,42 +70,55 @@ if __name__ == '__main__':
 
                 dims_label = "_".join([ordered_params[param] + "_" + str(dims[param]) for param in dims])
 
-                f.write('\t\t\tvar {}_{}_{} = "data:image/svg+xml;utf8,{}"\n'.format(ordered_params[x],
+                output += ('\t\t\tvar {}_{}_{} = "data:image/svg+xml;utf8,{}"\n'.format(ordered_params[x],
                                                                                      ordered_params[y],
                                                                                      dims_label, pic))
         else:
             pic = Picture(bounds_pos)
             pic.load_points(points, x, y, min_val, max_val)
-            f.write('\t\t\tvar {}_{} = "data:image/svg+xml;utf8,{}"\n'.format(ordered_params[x],
+            output += ('\t\t\tvar {}_{} = "data:image/svg+xml;utf8,{}"\n'.format(ordered_params[x],
                                                                               ordered_params[y], pic))
 
     # print mid
-    f.write(libs.html.HTML_mid)
-    f.write(libs.html.HTML_x_axis)
+    output += (libs.html.HTML_mid)
+    output += (libs.html.HTML_x_axis)
 
     # print x-axis options
-    f.write(libs.html.print_option(ordered_params[0], True))
+    output += (libs.html.print_option(ordered_params[0], True))
     for param in ordered_params[1:]:
-        f.write(libs.html.print_option(param))
+        output += (libs.html.print_option(param))
 
-    f.write(libs.html.HTML_y_axis)
-    f.write(libs.html.print_option(ordered_params[0]))
-    f.write(libs.html.print_option(ordered_params[1], True))
+    output += (libs.html.HTML_y_axis)
+    output += (libs.html.print_option(ordered_params[0]))
+    output += (libs.html.print_option(ordered_params[1], True))
     for param in ordered_params[2:]:
-        f.write(libs.html.print_option(param))
+        output += (libs.html.print_option(param))
 
     # print end
-    f.write(libs.html.HTML_end_1)
+    output += (libs.html.HTML_end_1)
 
     # print other dimensions
     if len(ordered_params) > 2:
-        f.write(libs.html.HTML_other_dim)
+        output += (libs.html.HTML_other_dim)
         for i in range(len(ordered_params) - 2):
-            f.write(libs.html.HTML_dim_options.format(i, ordered_params[i+2]))
+            output += (libs.html.HTML_dim_options.format(i, ordered_params[i+2]))
             values = sample_space[ordered_params[i+2]]
             for j in range(len(values)):
-                f.write(libs.html.print_fixed_option(j, values[j]))
-            f.write(libs.html.HTML_dim_options_end)
+                output += (libs.html.print_fixed_option(j, values[j]))
+            output += (libs.html.HTML_dim_options_end)
 
     # print end
-    f.write(libs.html.HTML_end_2)
+    output += (libs.html.HTML_end_2)
+    return output
+
+if __name__ == '__main__':
+    output_file = sys.argv[-1]
+    params = eval(sys.argv[-2])
+    storm_file = sys.argv[-3]
+    
+    out = sample(storm_file, params)
+
+    f = open(output_file, "w")
+    f.write(out)
+    f.close()
+    
