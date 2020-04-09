@@ -1,24 +1,17 @@
-import libs.html
-import sys
+import argparse
+import sys, os
 import numpy as np
 import itertools
+
+# this add to path RegionSampling home dir, so it can be called from anywhere
+sys.path.append(os.path.split(sys.path[0])[0])
 
 from libs.point import get_bounds_positions, get_bounds_values, filter_points
 from libs.parsing import parse_storm_file
 from libs.sampling import samplePoints
 from libs.svg import Picture
+import libs.html
 
-'''
-python3 run.py <storm_output_file> <parameter_intervals> <output_html_file>
-
-where <parameters> is a dictionary of type:
-    "param-name" : [from, to, number]
-    which will create a linear space
-    with interval (<from>, <to>) and <number> samples.
-
-Example:
-    python3 run.py storm_output.txt '{"q" : [5, 10, 10], "p" : [0, 2, 10]}' output.html
-'''
 
 def sample(storm_file, params):
     output = ""
@@ -111,14 +104,37 @@ def sample(storm_file, params):
     output += (libs.html.HTML_end_2)
     return output
 
-if __name__ == '__main__':
-    output_file = sys.argv[-1]
-    params = eval(sys.argv[-2])
-    storm_file = sys.argv[-3]
-    
-    out = sample(storm_file, params)
 
-    f = open(output_file, "w")
+'''
+usage: run.py [-h] --storm_file STORM_FILE --output OUTPUT --params PARAMS
+
+Region sampling
+
+arguments:
+  -h, --help            show this help message and exit
+  --storm_file STORM_FILE
+  --output OUTPUT
+  --params PARAMS
+
+
+Example:
+    python3 run.py storm_output.txt '{"q" : [5, 10, 10], "p" : [0, 2, 10]}' output.html
+'''
+
+
+if __name__ == '__main__':
+    args_parser = argparse.ArgumentParser(description='Region sampling')
+    args_parser.add_argument('--storm_file', type=str, required=True)
+    args_parser.add_argument('--output', type=str, required=True)
+    args_parser.add_argument('--params', required=True)
+
+    args = args_parser.parse_args()
+
+    params = eval(args.params)
+    
+    out = sample(args.storm_file, params)
+
+    f = open(args.output, "w")
     f.write(out)
     f.close()
     
