@@ -15,6 +15,7 @@ def samplePoints(function, sample_space, ordered_params):
     for symbol in ordered_params:
         symbols.append(eval(symbol))
 
+    function = function.replace("^", "**")
     function = parse_expr(function)
     results = []
 
