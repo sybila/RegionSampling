@@ -58,7 +58,7 @@ def sample(storm_file, params):
 
                 filtered_points = filter_points(points, dims_values)
 
-                pic = Picture(bounds_pos)
+                pic = Picture(bounds_pos, False)
                 pic.load_points(filtered_points, x, y, min_val, max_val)
 
                 dims_label = "_".join([ordered_params[param] + "_" + str(dims[param]) for param in dims])
@@ -67,7 +67,7 @@ def sample(storm_file, params):
                                                                                      ordered_params[y],
                                                                                      dims_label, pic))
         else:
-            pic = Picture(bounds_pos)
+            pic = Picture(bounds_pos, False)
             pic.load_points(points, x, y, min_val, max_val)
             output += ('\t\t\tvar {}_{} = "data:image/svg+xml;utf8,{}"\n'.format(ordered_params[x],
                                                                               ordered_params[y], pic))
