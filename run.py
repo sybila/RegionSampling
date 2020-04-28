@@ -110,8 +110,7 @@ usage: run.py [-h] --storm_file STORM_FILE --output OUTPUT --params PARAMS
 
 Region sampling
 
-arguments:
-  -h, --help            show this help message and exit
+required arguments:
   --storm_file STORM_FILE
   --output OUTPUT
   --params PARAMS
@@ -124,9 +123,13 @@ Example:
 
 if __name__ == '__main__':
     args_parser = argparse.ArgumentParser(description='Region sampling')
-    args_parser.add_argument('--storm_file', type=str, required=True)
-    args_parser.add_argument('--output', type=str, required=True)
-    args_parser.add_argument('--params', required=True)
+
+    args_parser._action_groups.pop()
+    required = args_parser.add_argument_group('required arguments')
+
+    required.add_argument('--storm_file', type=str, required=True)
+    required.add_argument('--output', type=str, required=True)
+    required.add_argument('--params', required=True)
 
     args = args_parser.parse_args()
 
