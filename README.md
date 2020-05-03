@@ -5,7 +5,7 @@ Visualisation of quantitative model checking using a sampling of rational functi
 
 Usage:
 ```
-python3 sample.py <storm_output_file> <parameter_intervals> <output_html_file>
+python3 run.py <storm_output_file> <parameter_intervals> <output_html_file>
 
 where <parameters> is a dictionary of type:
     "param-name" : [from, to, number]
@@ -13,5 +13,5 @@ where <parameters> is a dictionary of type:
     with interval (<from>, <to>) and <number> samples.
 
 Example:
-    python3 sample.py storm_output.txt '{"q" : [5, 10, 10], "p" : [0, 2, 10]}' output.html
+    python3 run.py storm_output.txt '{"q" : [5, 10, 10], "p" : [0, 2, 10]}' output.html
 ```
